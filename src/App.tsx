@@ -1,11 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import { Container, Description } from "./Styles/styled";
+import { AppBody, Container, Description } from "./Styles/styled";
+import { fetchDogsData } from "./lib/api";
+import Loader from "./components/Loader";
+import DogForm from "./components/DogForm";
 
 function App() {
+  const [breedList, setBreedList] = useState(null);
+  const [subBreedList, setSubBreedList] = useState([]);
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchData = async () => {
+    await fetchDogsData()
+      .then((data) => {
+        setBreedList(data?.message);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (isLoading) return <Loader />;
+
+  if (!breedList) return <p>No Dogs Found</p>;
+
   return (
     <Container>
-      <text>hello world</text>
       <h1>Dog App</h1>
       <Description>
         <ul>
@@ -20,13 +46,27 @@ function App() {
         <br />
         <p>
           Created by{" "}
-          <a href="https://github.com/KhamHti/" target="_blank" rel="no referrer">
+          <a
+            href="https://github.com/KhamHti/"
+            target="_blank"
+            rel="no referrer"
+          >
             Kham{" "}
           </a>
         </p>
       </Description>
+      <AppBody>
+        <DogForm
+          breedList={breedList}
+          subBreedList={subBreedList}
+          setImages={setImages}
+          setIsLoading={setIsLoading}
+        />
+        <p>results</p>
+      </AppBody>
     </Container>
   );
 }
 
 export default App;
+ 

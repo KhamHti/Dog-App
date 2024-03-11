@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import { AppBody, Container, Description } from "./Styles/styled";
-import { fetchDogsData } from "./lib/api";
+import { fetchDogsData, fetchDogsSubBreed } from "./lib/api";
 import Loader from "./components/Loader";
 import DogForm from "./components/DogForm";
+import { useSelector } from "react-redux";
+import { RootState } from "./reducers";
 
 function App() {
   const [breedList, setBreedList] = useState(null);
@@ -11,7 +13,10 @@ function App() {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchData = async () => {
+  const dogStore = useSelector((state: RootState) => state.app);
+  const breedState = dogStore?.breed;
+
+  const fetchData = useCallback(async () => {
     await fetchDogsData()
       .then((data) => {
         setBreedList(data?.message);
@@ -20,11 +25,22 @@ function App() {
       .catch((error) => {
         console.log(error);
       });
-  };
+
+    if (breedState !== "all") {
+      await fetchDogsSubBreed(breedState)
+        .then((data) => {
+          setSubBreedList(data?.message);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [breedState]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [breedState, fetchData]);
 
   if (isLoading) return <Loader />;
 
@@ -69,4 +85,3 @@ function App() {
 }
 
 export default App;
- 

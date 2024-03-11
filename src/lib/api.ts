@@ -21,7 +21,7 @@ export const fetchDogsSubBreed = async (breed: string) => {
         return respons?.data;
     } catch (error) {
         if (error instanceof Error) {
-            console.log('error => ', error)
+            console.log('error ;;;;;;;;;;;;;;;;;;;; => ', error)
         } else {
             console.log('Unexcepted error => ', error)
         }

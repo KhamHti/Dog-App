@@ -19,10 +19,8 @@ function DogForm({
   setImages,
   setIsLoading,
 }: DogFormProps) {
-  console.log("breedlist =>", breedList);
   const dispatch = useDispatch();
   const dogStore = useSelector((state: RootState) => state.app);
-  console.log(dogStore);
 
   const renderBreed = (value: string) => {
     // console.log(value, "function is working");
@@ -30,9 +28,31 @@ function DogForm({
       type: ActionType.BREED,
       payload: value,
     });
+    dispatch({
+      type: ActionType.SUB_BREED,
+      payload: "all",
+    });
+  };
+
+  const renderSubBreed = (value: string) => {
+    // console.log(value, "function is working");
+    dispatch({
+      type: ActionType.SUB_BREED,
+      payload: value,
+    });
+  };
+
+  const renderNumber = (value: string) => {
+    // console.log(value, "function is working");
+    dispatch({
+      type: ActionType.NUMBER,
+      payload: value,
+    });
   };
 
   const breedState = dogStore?.breed;
+  const subBreedState = dogStore?.subBreed;
+  const numberState = dogStore?.number;
 
   return (
     <DogFormContainer>
@@ -49,6 +69,35 @@ function DogForm({
                 {breed}
               </option>
             ))}
+        </select>
+      </DropDown>
+      <DropDown title="Select a sub breed" showError={false}>
+        <select
+          onChange={(e) => renderSubBreed(e.target.value)}
+          value={subBreedState}
+        >
+          <option value="all">Select Sub Breed</option>
+          {subBreedList?.length &&
+            subBreedList?.map((subBreed: string, index: number) => (
+              <option value={subBreed} key={index}>
+                {subBreed}
+              </option>
+            ))}
+        </select>
+      </DropDown>
+
+      {/* number */}
+      <DropDown title="Number of Images" showError={false}>
+        <select
+          onChange={(e) => renderNumber(e.target.value)}
+          value={numberState}
+        >
+          <option value="all">Please Select</option>
+          {Array.from({ length: 50 }, (_, index) => (
+            <option value={index + 1} key={index}>
+              {index + 1}
+            </option>
+          ))}
         </select>
       </DropDown>
     </DogFormContainer>

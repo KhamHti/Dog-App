@@ -14,7 +14,7 @@ export const renderBreed = (value: string, dispatch: Dispatch<any>) => {
 };
 
 export const renderSubBreed = (value: string, dispatch: Dispatch<any>) => {
-    // console.log(value, "function is working");
+    console.log(value, "function is working", value);
     dispatch({
         type: ActionType.SUB_BREED,
         payload: value,
